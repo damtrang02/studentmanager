@@ -1,5 +1,7 @@
 import entity.Student;
+import jdk.swing.interop.SwingInterOpUtils;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -11,15 +13,146 @@ public class Application {
 //        playWithArrayList();
 //        sortArrayListManuallly();
 //        playWithSet();
-        Student result = searchStudent("SE8888");
-        if (result  != null ){      //!= null (chính là số 0, toạ độ đáy ram)
-            result.showProfile();
+//        Student result = searchStudent("SE8888");
+//        if (result  != null ){      //!= null (chính là số 0, toạ độ đáy ram)
+//            result.showProfile();
+//        }
+//        else {
+//            System.out.println("NOT FOUND!!!");
+//        }
+
+//        sortStudentList();
+
+        List<Student> arr  = initData();
+        System.out.println("The Student list ");
+        for (Student x:
+             arr) {
+            x.showProfile();
         }
-        else {
+
+        //search sinh viên
+        System.out.println("\nSearching...");
+        Student xxx = searchAsStudent(arr,"SE8888888");
+        if(xxx == null) {
             System.out.println("NOT FOUND!!!");
+        }else
+            xxx.showProfile(); // xxx trỏ vào bạn 8 trong HEAP
+                               // UPDATE INFO LUÔN
+            xxx.setGpa(6789);
+
+        System.out.println("\nThe Student list after 6789 ");
+        for (Student x:
+                arr) {
+            x.showProfile();
         }
 
     }
+
+        // HÀM VI DIỆU - XỊN SÒ
+        //hàm trả về 1 cái túi, trong cái túi có nhiều thẻ bài/ cardvisit, con trỏ
+        //trỏ vùng new Student đâu đó trong HEAP
+        //  List<Student> arr = new Cái túi , ArrayLisst , trong có gì không care
+        //                tên hàm trỏ vào 1 cái Túi có  gì...
+        //float sqrt(float)             float x = sqrt(4);
+        public static List<Student> initData() {
+            List<Student> arr = new ArrayList<>();
+            arr.add(new Student("SE124521","NAM LE",2003,4));
+            arr.add(new Student("SE5611241","CHIN PHAM",2002,9));
+            arr.add(new Student("SE8888888","TAM LI",2001,8));
+            arr.add(new Student("SE0129845","VAN TU",2000,9.4));
+            arr.add(new Student("SE111111","MOT ANH",2004,1));
+            return arr;// ~~~ intitData() = arr = new ArrayList();
+        }   // tên hàm là toạ độ vùng new Giỏ có bên trong 1 đống thẻ bài SV
+            // tên hàm là trỏ cái giỏ rồi
+
+
+
+    //-----------------------------------------------------------------
+    // VIẾT CODE CHUẨN ĐẸP VỀ CÁC HÀM SORT, SEARCH ???
+    // TƯ DUY CÁC HÀM STATIC Ở ĐÂY VẪN CHƯA LÀ TƯ DUY OOP
+    // TƯ DUY OOP LÀ TƯ DUY OBJECT, KHUÔN, HÀM PHẢI THUỘC VỀ OBJECT
+    // NHỮNG HÀM LÁT HỒI MÌNH LÀM ĐÚNG CHUẨN PHẢI VỀ 1 OBJECT NÀO ĐÓ
+    // OBJECT CÁI TỬ/ THÙNG CHỨA ĐÃ HỌC TRONG BÀI MẢNG
+    //-----------------------------------------------------------------
+
+
+    //  Student x = new Student nào đó... vùng new nào đố
+    //      searchAStudent (String id) = vùng new nào đó
+    //                                đưa toạ độ của 1 cái giỏ
+    //                              1 vùng new ArrayList() ở đâu đó vào
+    //                              trong hàm này không new Giỏ/Túi
+    //                              đứng trong hàm móc vào/ neo vào bám/vào
+    //                              trỏ vào cái túi ở đâu đó bên ngoài
+    //
+
+    //KĨ THUẬT TRUYỀN THAM CHIẾU - PASS BY REFERENCE
+    public static Student searchAsStudent( List<Student> arr ,String id) {
+       //for trong arr, get(i) lấy từng thẻ bài, có địa chỉ , đến địa chỉ hỏi Id
+        // Rồi so với id đưa vào , nếu giống thì return toạ độ vùng new Student vừa tìm thấy
+        // return cái get(i) nếu nó là cái cần tìm
+        // return get(i)
+        if(arr.size() == 0)
+            return null ;  // giỏ không có gì , search làm gì
+
+        for (int i = 0 ; i < arr.size(); i++){
+//            Student t = arr.get(i);
+//            String tId = t.getId();
+//            if (tId.equalsIgnoreCase(id)) return arr.get(i) ;
+
+            if (arr.get(i).getId().equalsIgnoreCase(id))
+                return arr.get(i);
+        }
+
+
+        return null;// không  search đc trả null
+
+    }
+
+
+    public static void sortStudentList(){
+        List<Student> arr = new ArrayList<>(); // arr là tên gọi tắt cho cái túi
+                                               //Túi đang rỗng, có dây kéo, mở ra
+                                               // bỏ đồ vô
+                                               // đồ bỏ vô là 1 chuyện khác
+                                               // new Món đồ, new Student
+                                               // Mua cái tử đựng hồ sơ
+                                               // Có Sv đến nộp hồ sơ
+        arr.add(new Student("SE124521","NAM LE",2003,4));
+        arr.add(new Student("SE5611241","CHIN PHAM",2002,9));
+        arr.add(new Student("SE8888888","TAM LI",2001,8));
+        arr.add(new Student("SE0129845","VAN TU",2000,9.4));
+        arr.add(new Student("SE111111","MOT ANH",2004,1));
+        //arr chính là danh sách Excel chứa số liên lạc của sv, Sv cứ việc về nhà
+        // Excel với sll là ds con trỏ/tham chiếu
+        System.out.println("The Student list before sorting:");
+        for (Student x:
+             arr) {  // x = từng thẻ bài/ con trỏ, = từng toạ độ
+                     // đến toạ dộ đó xem biến trỏ thì lưu toạ độ
+            x.showProfile();
+        }
+
+        //sort
+        for(int i = 0 ; i < arr.size() -1 ; i++){
+            for (int j = i + 1 ; j < arr.size() ; j++){
+                if (arr.get(i).getGpa() > arr.get(j).getGpa()) {
+                    Student t = arr.get(i);
+                    arr.set(i,arr.get(j));
+                    arr.set(j,t);
+                }
+            }
+        }
+
+        System.out.println("The Student list after sorting:");
+
+        for (Student x:
+        arr) {
+            x.showProfile();
+        }
+
+    }
+
+
+
 
     //XEM LẠI 7 VIÊN NGỌC RỒNG
     //HÀM SEARCH TRẢ VỀ 1 OBJECT
